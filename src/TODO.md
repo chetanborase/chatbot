@@ -1,0 +1,5 @@
+- [ ] animate chat nutton onclick button
+- [ ] animate chat box open popover
+- [ ] animate chat message popover
+- [ ] delay and animate incoming message
+- [ ] show loading screen

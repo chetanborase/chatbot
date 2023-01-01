@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .flex-container {
+    @apply flex flex-row justify-center items-center;
+  }
+
+  .card-xl {
+    @apply bg-white shadow-xl rounded-xl ;
+  }
+  
+  .card-md {
+    @apply bg-white shadow-md rounded-md;
+  }
+}
+
+body{
+  background-image: url(./assets/ecommercebg.png);
+  background-position: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
