@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { BASE_URL } from '../constants/appConstants.js';
 import sendIcon from '../assets/send-message.png'
 import Message from './Message.jsx';
@@ -16,6 +16,7 @@ const ChatBox = (props) => {
             ...q,
             isIncoming
         }
+
         setmessages(prevstate => [...prevstate, message])
     }
 
@@ -45,6 +46,18 @@ const ChatBox = (props) => {
 
     const memoizedList = useMemo(() => (messages), [messages.length])
 
+    const onMessageSend = (e) => {
+        e.preventDefault();
+        const messageText = e.target.messageText.value;
+
+        if (!messageText || messageText.length == 0) {
+            return
+        }
+        e.target.messageText.value = '';
+        addMessage({ qid: -1, content: messageText }, false);
+    }
+    
+
     return (
         <div className='card-xl h-full flex flex-col rounded-br-none'>
             <div id="chat-header" className='bg-[#5a5eb9] h-14 flex-container justify-start pl-5 rounded-t-lg '>
@@ -55,17 +68,15 @@ const ChatBox = (props) => {
                     <p className='text-white font-semibold'>Chat Bot</p>
                     <p className='text-gray-200 text-[12px]'>Online</p>
                 </div>
-                <div
-                    className='text-white self-center ml-auto mr-5' onClick={props.onChatBotClosed}>
-                    <svg className=''
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <div className='text-white self-center ml-auto mr-5' onClick={props.onChatBotClosed}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
 
                 </div>
             </div>
             <div id="chat-content"
-                className={`flex-1 flex-container overflow-y-auto`}>
+                className={`flex-1 flex-container overflow-y-auto overflow-x-hidden `}>
                 <Message list={memoizedList} />
             </div>
 
@@ -73,20 +84,25 @@ const ChatBox = (props) => {
                 <div className='flex flex-col-reverse w-full' >
                     <SearchPopOver searchText={search} onSearchResultCallback={onSearchResultCallback} />
                 </div>
-                <form className="flex flex-row h-14 p-2">
+                <form className="flex flex-row h-14 p-2"
+                    onSubmit={onMessageSend}>
                     <input type="text"
                         className='w-full p-2 outline-none text-gray-700'
+                        id="messageText"
+                        name="messageText"
                         placeholder='Send a message...' onChange={
                             (e) => {
                                 setsearch(e.target.value)
                             }
                         } />
 
-                    <div className='w-14 flex-container inline-flex 
-                     rounded-md focus:ring-4 active:bg-gray-300 active:shadow-lg transition duration-150 ease-in-out select-none'>
+                    <button className='w-14 flex-container inline-flex 
+                     rounded-md active:bg-gray-300 active:shadow-lg active:outline-none transition duration-150 ease-in-out select-none'
+                        type='submit'
+                    >
                         <img src={sendIcon}
                             className='w-8 h-7' alt={"send button"} />
-                    </div>
+                    </button>
                 </form>
 
             </div>
